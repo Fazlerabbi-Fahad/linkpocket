@@ -1,0 +1,182 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Design tokens: Indigo + Violet + Neutral Slate (docs/DESIGN.md is the source of truth).
+ * shadcn names and oklch values; the hex each value came from is in the comment. Light is
+ * the default; next-themes puts `.dark` on <html> when the user picks the dark theme.
+ * The only colours outside this file are the browser theme-color meta (app/layout.tsx) and
+ * the QR raster (lib/qr.ts), which cannot read CSS variables; both match --qr-* here.
+ */
+:root {
+  color-scheme: light;
+  --background: oklch(0.984 0.003 247.9); /* #F8FAFC slate-50 */
+  --foreground: oklch(0.208 0.04 265.8); /* #0F172A slate-900 */
+  --card: oklch(1 0 0); /* #FFFFFF */
+  --card-foreground: var(--foreground);
+  --popover: oklch(1 0 0); /* #FFFFFF */
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.511 0.23 277); /* #4F46E5 indigo-600 */
+  --primary-foreground: oklch(1 0 0); /* #FFFFFF */
+  --primary-hover: oklch(0.457 0.215 277); /* #4338CA indigo-700 */
+  --secondary: oklch(0.968 0.007 247.9); /* #F1F5F9 slate-100 */
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.968 0.007 247.9); /* #F1F5F9 slate-100 */
+  --muted-foreground: oklch(0.554 0.041 257.4); /* #64748B slate-500 */
+  /* shadcn "accent" is the neutral hover surface, not a brand colour. */
+  --accent: oklch(0.968 0.007 247.9); /* #F1F5F9 slate-100 */
+  --accent-foreground: var(--foreground);
+  --violet: oklch(0.541 0.247 293); /* #7C3AED violet-600 */
+  --violet-foreground: oklch(1 0 0); /* #FFFFFF */
+  --indigo-soft: oklch(0.962 0.018 272.3); /* #EEF2FF indigo-50 */
+  --indigo-soft-foreground: oklch(0.398 0.177 277.4); /* #3730A3 indigo-800 */
+  --violet-soft: oklch(0.943 0.028 294.6); /* #EDE9FE violet-100 */
+  --violet-soft-foreground: oklch(0.432 0.211 292.8); /* #5B21B6 violet-800 */
+  --destructive: oklch(0.577 0.215 27.3); /* #DC2626 red-600 */
+  --destructive-foreground: oklch(1 0 0); /* #FFFFFF */
+  --border: oklch(0.929 0.013 255.5); /* #E2E8F0 slate-200 */
+  /* Form-control outlines need 3:1 (WCAG 1.4.11), so inputs use slate-500 (4.8:1). */
+  --input: oklch(0.554 0.041 257.4); /* #64748B slate-500 */
+  --ring: oklch(0.585 0.204 277.1); /* #6366F1 indigo-500 */
+  --chart-1: oklch(0.511 0.23 277); /* #4F46E5 */
+  --chart-2: oklch(0.541 0.247 293); /* #7C3AED */
+  --logo-from: oklch(0.511 0.23 277); /* #4F46E5 */
+  --logo-to: oklch(0.541 0.247 293); /* #7C3AED */
+  --overlay: oklch(0.208 0.04 265.8 / 0.45); /* slate-900 at 45% */
+  --qr-paper: oklch(1 0 0); /* #FFFFFF in both themes, for scanners */
+  --qr-ink: oklch(0.208 0.04 265.8); /* #0F172A in both themes */
+  --shadow-card: 0 1px 2px 0 oklch(0.208 0.04 265.8 / 0.05);
+  --shadow-dialog: 0 24px 60px -20px oklch(0.208 0.04 265.8 / 0.3);
+}
+
+/* Dark: slate, never pure black. */
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.208 0.04 265.8); /* #0F172A slate-900 */
+  --foreground: oklch(0.968 0.007 247.9); /* #F1F5F9 slate-100 */
+  --card: oklch(0.279 0.037 260); /* #1E293B slate-800 */
+  --popover: oklch(0.279 0.037 260); /* #1E293B slate-800 */
+  --primary: oklch(0.68 0.158 276.9); /* #818CF8 indigo-400 */
+  --primary-foreground: oklch(0.208 0.04 265.8); /* #0F172A */
+  --primary-hover: oklch(0.785 0.104 274.7); /* #A5B4FC indigo-300 */
+  --secondary: oklch(0.279 0.037 260); /* #1E293B slate-800 */
+  --muted: oklch(0.279 0.037 260); /* #1E293B slate-800 */
+  --muted-foreground: oklch(0.711 0.035 256.8); /* #94A3B8 slate-400 */
+  --accent: oklch(0.372 0.039 257.3); /* #334155 slate-700 */
+  --violet: oklch(0.709 0.159 293.5); /* #A78BFA violet-400 */
+  --violet-foreground: oklch(0.208 0.04 265.8); /* #0F172A */
+  --indigo-soft: oklch(0.585 0.204 277.1 / 0.15); /* rgba(99,102,241,0.15) */
+  --indigo-soft-foreground: oklch(0.785 0.104 274.7); /* #A5B4FC */
+  --violet-soft: oklch(0.606 0.219 292.7 / 0.15); /* rgba(139,92,246,0.15) */
+  --violet-soft-foreground: oklch(0.811 0.101 293.6); /* #C4B5FD */
+  --destructive: oklch(0.711 0.166 22.2); /* #F87171 red-400 */
+  --destructive-foreground: oklch(0.208 0.04 265.8); /* #0F172A */
+  --border: oklch(0.372 0.039 257.3); /* #334155 slate-700 */
+  --input: oklch(0.554 0.041 257.4); /* #64748B slate-500, 3.1:1 on slate-800 */
+  --ring: oklch(0.68 0.158 276.9); /* #818CF8 */
+  --chart-1: oklch(0.68 0.158 276.9); /* #818CF8 */
+  --chart-2: oklch(0.709 0.159 293.5); /* #A78BFA */
+  --logo-from: oklch(0.68 0.158 276.9); /* #818CF8 */
+  --logo-to: oklch(0.709 0.159 293.5); /* #A78BFA */
+  --overlay: oklch(0.129 0.042 264.7 / 0.6); /* slate-950 at 60% */
+  /* No shadow in dark; a zero shadow (not `none`) so it can sit in a shadow list. */
+  --shadow-card: 0 0 #0000;
+  --shadow-dialog: 0 24px 60px -20px oklch(0 0 0 / 0.5);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-violet: var(--violet);
+  --color-violet-foreground: var(--violet-foreground);
+  --color-indigo-soft: var(--indigo-soft);
+  --color-indigo-soft-foreground: var(--indigo-soft-foreground);
+  --color-violet-soft: var(--violet-soft);
+  --color-violet-soft-foreground: var(--violet-soft-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-overlay: var(--overlay);
+  --color-qr-paper: var(--qr-paper);
+  --color-qr-ink: var(--qr-ink);
+  --shadow-card: var(--shadow-card);
+  --shadow-dialog: var(--shadow-dialog);
+  --font-display: 'Clash Display', 'Satoshi', sans-serif;
+  --font-sans: 'Satoshi', sans-serif;
+  --font-mono: var(--font-jetbrains), monospace;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: 'ss01';
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  ::selection {
+    background: var(--indigo-soft);
+    color: var(--indigo-soft-foreground);
+  }
+}
+
+/* Pinned cards: a violet left edge, drawn inside the border so nothing shifts. */
+.pinned-edge {
+  box-shadow:
+    inset 3px 0 0 var(--violet),
+    var(--shadow-card);
+}
+
+/* The logo mark: the only gradient in the product (DESIGN.md). */
+.logo-mark {
+  background-image: linear-gradient(135deg, var(--logo-from), var(--logo-to));
+  background-clip: text;
+  color: transparent;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

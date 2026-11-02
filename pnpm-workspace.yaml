@@ -1,0 +1,11 @@
+# Single-project settings (no workspace packages).
+# Dependency build scripts are denied unless listed here (supply-chain hardening).
+# esbuild verifies its platform binary. @sentry/cli gets its binary from a per-platform
+# optional dependency, so its postinstall download is not needed.
+allowBuilds:
+  '@sentry/cli': false
+  esbuild: true
+
+minimumReleaseAgeExclude:
+  - '@hookform/resolvers@7.0.0'
+  - lucide-react@1.66.0

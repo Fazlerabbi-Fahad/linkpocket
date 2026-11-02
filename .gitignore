@@ -1,0 +1,26 @@
+node_modules/
+dist/
+coverage/
+.next/
+out/
+*.tsbuildinfo
+.turbo/
+
+# Environment files: only the .env.example placeholders are committed.
+.env
+.env.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Test artifacts
+playwright-report/
+test-results/
+next-env.d.ts
+
+# Playwright email outbox
+e2e/.outbox/

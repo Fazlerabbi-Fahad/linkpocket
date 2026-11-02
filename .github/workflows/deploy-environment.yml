@@ -1,0 +1,73 @@
+# Deploys one commit of the web app to one environment on Vercel (SRS 10.1), then smoke-tests
+# it, including a call to the API through the web origin. Called by deploy.yml.
+# The `production` GitHub environment has required reviewers: that is the manual approval
+# gate (api project: docs/runbooks/deployment.md). Secrets live in the GitHub environments.
+# Contract changes ship in the API first; the web app follows (ADR-0010).
+name: Deploy environment
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: staging or production
+        required: true
+        type: string
+      ref:
+        description: Commit SHA to deploy
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: ${{ inputs.environment }}
+      url: ${{ vars.WEB_URL }}
+    env:
+      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      # Vercel "Preview" holds the staging settings; "Production" holds production's.
+      VERCEL_TARGET: ${{ inputs.environment == 'production' && 'production' || 'preview' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (Vercel)
+        run: |
+          pnpm dlx vercel@64.1.0 pull --yes --environment="$VERCEL_TARGET" --token="$VERCEL_TOKEN"
+          if [ "$VERCEL_TARGET" = production ]; then
+            pnpm dlx vercel@64.1.0 build --prod --token="$VERCEL_TOKEN"
+          else
+            pnpm dlx vercel@64.1.0 build --token="$VERCEL_TOKEN"
+          fi
+
+      - name: Deploy (Vercel)
+        run: |
+          if [ "$VERCEL_TARGET" = production ]; then
+            url=$(pnpm dlx vercel@64.1.0 deploy --prebuilt --prod --token="$VERCEL_TOKEN")
+          else
+            url=$(pnpm dlx vercel@64.1.0 deploy --prebuilt --token="$VERCEL_TOKEN")
+            # Staging lives on a fixed domain; point it at this deployment.
+            pnpm dlx vercel@64.1.0 alias set "$url" "${{ vars.WEB_DOMAIN }}" --token="$VERCEL_TOKEN"
+          fi
+          echo "Deployed ${url}"
+
+      - name: Smoke test
+        run: bash .github/scripts/smoke.sh "${{ vars.WEB_URL }}"
