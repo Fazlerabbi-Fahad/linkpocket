@@ -35,7 +35,7 @@ jobs:
       # Vercel "Preview" holds the staging settings; "Production" holds production's.
       VERCEL_TARGET: ${{ inputs.environment == 'production' && 'production' || 'preview' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ inputs.ref }}
 
